@@ -1,0 +1,50 @@
+# ---------------------------------------------------------------------------
+# Prometheus Configuration
+# ---------------------------------------------------------------------------
+# Scrapes metrics from the OpenTelemetry Collector and all four
+# platform microservices via Spring Boot Actuator Prometheus endpoints.
+# ---------------------------------------------------------------------------
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # OpenTelemetry Collector metrics (exported from OTLP pipeline)
+  - job_name: "otel-collector"
+    static_configs:
+      - targets: ["otel-collector:8889"]
+        labels:
+          service: "otel-collector"
+
+  # Ingestion Service - Spring Boot Actuator
+  - job_name: "ingestion-service"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["ingestion-service:8081"]
+        labels:
+          service: "ingestion-service"
+
+  # Orchestrator Service - Spring Boot Actuator
+  - job_name: "orchestrator-service"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["orchestrator-service:8082"]
+        labels:
+          service: "orchestrator-service"
+
+  # Action Service - Spring Boot Actuator
+  - job_name: "action-service"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["action-service:8083"]
+        labels:
+          service: "action-service"
+
+  # Query Service - Spring Boot Actuator
+  - job_name: "query-service"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["query-service:8084"]
+        labels:
+          service: "query-service"
